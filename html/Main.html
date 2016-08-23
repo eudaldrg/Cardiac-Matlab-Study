@@ -1,0 +1,1642 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Main</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-23"><meta name="DC.source" content="Main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">SHAPE, MOTION AND DEFORMATION ANALYSIS OF 2D ECHOCARDIOGRAPHIC SEQUENCES</a></li><li><a href="#2">Myocardial shape at the beginning of the cycle, at end of the systole and at end of the diastole</a></li><li><a href="#3">Total length of the entire myocardial shape at end-systole (les, at end-diastole (led) and ratio.</a></li><li><a href="#4">Radial and longitudinal direction of the myocardial wall</a></li><li><a href="#5">Radial and Longitudinal Displacement Calculation</a></li><li><a href="#6">Radial and Longitudinal Velocity Calculation</a></li><li><a href="#7">Strain Calculation</a></li></ul></div><h2>SHAPE, MOTION AND DEFORMATION ANALYSIS OF 2D ECHOCARDIOGRAPHIC SEQUENCES<a name="1"></a></h2><p>Drag your data into the workspace to begin the analysis.</p><pre class="codeinput">clc;
+close <span class="string">all</span>;
+warning(<span class="string">'off'</span>, <span class="string">'MATLAB:singularMatrix'</span>)
+</pre><h2>Myocardial shape at the beginning of the cycle, at end of the systole and at end of the diastole<a name="2"></a></h2><pre class="codeinput"><span class="comment">% Subject 1 Myocardial shape</span>
+figure;
+subplot(2,2,1);
+hold <span class="string">on</span>;
+axis <span class="string">equal</span>
+axis([-60,40,-120,0])
+title(<span class="string">'Subject 1'</span>);
+plot(Subject{1}.phi_x(1,:),Subject{1}.phi_y(1,:),<span class="string">'Marker'</span>,<span class="string">'x'</span>);
+plot(Subject{1}.phi_x(endSystole,:),Subject{1}.phi_y(endSystole,:),<span class="string">'r'</span>);
+plot(Subject{1}.phi_x(endDiastole,:),Subject{1}.phi_y(endDiastole,:),<span class="string">'g'</span>);
+legend(<span class="string">'t=1'</span>,<span class="string">'End systole'</span>,<span class="string">'End diastole'</span>);
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+
+<span class="comment">% Subject 2 Myocardial shape</span>
+subplot(2,2,2);
+hold <span class="string">on</span>;
+axis <span class="string">equal</span>
+axis([-60,40,-120,0])
+title(<span class="string">'Subject 2'</span>);
+plot(Subject{2}.phi_x(1,:),Subject{2}.phi_y(1,:),<span class="string">'Marker'</span>,<span class="string">'x'</span>);
+plot(Subject{2}.phi_x(endSystole,:),Subject{2}.phi_y(endSystole,:),<span class="string">'r'</span>);
+plot(Subject{2}.phi_x(endDiastole,:),Subject{2}.phi_y(endDiastole,:),<span class="string">'g'</span>);
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+
+<span class="comment">% Subject 3 Myocardial shape</span>
+subplot(2,2,3);
+hold <span class="string">on</span>;
+axis <span class="string">equal</span>
+axis([-60,40,-120,0])
+title(<span class="string">'Subject 3'</span>);
+plot(Subject{3}.phi_x(1,:),Subject{3}.phi_y(1,:),<span class="string">'Marker'</span>,<span class="string">'x'</span>);
+plot(Subject{3}.phi_x(endSystole,:),Subject{3}.phi_y(endSystole,:),<span class="string">'r'</span>);
+plot(Subject{3}.phi_x(endDiastole,:),Subject{3}.phi_y(endDiastole,:),<span class="string">'g'</span>);
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+
+<span class="comment">% Subject 4 Myocardial shape</span>
+subplot(2,2,4);
+hold <span class="string">on</span>;
+axis <span class="string">equal</span>
+axis([-60,40,-120,0])
+title(<span class="string">'Subject 4'</span>);
+plot(Subject{4}.phi_x(1,:),Subject{4}.phi_y(1,:),<span class="string">'Marker'</span>,<span class="string">'x'</span>);
+plot(Subject{4}.phi_x(endSystole,:),Subject{4}.phi_y(endSystole,:),<span class="string">'r'</span>);
+plot(Subject{4}.phi_x(endDiastole,:),Subject{4}.phi_y(endDiastole,:),<span class="string">'g'</span>);
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+</pre><img vspace="5" hspace="5" src="Main_01.png" alt=""> <h2>Total length of the entire myocardial shape at end-systole (les, at end-diastole (led) and ratio.<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Subject 1</span>
+led1 = 0; <span class="comment">%length myocardium at end diastole</span>
+<span class="keyword">for</span> j = endDiastole <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:74 <span class="comment">% points</span>
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led1 = led1 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+les1 = 0; <span class="comment">% length myocardium at end systole</span>
+<span class="keyword">for</span> j = endSystole <span class="comment">%</span>
+    <span class="keyword">for</span> i = 2:74
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les1 = les1 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+ratio1=(led1-les1)/led1;
+<span class="comment">%Another aproximation of longitud with slyghtly different results</span>
+<span class="comment">% led1 = 0; %length myocardium at end diastole</span>
+<span class="comment">% for j = endDiastole %tiempo</span>
+<span class="comment">%     for i = 2:74 %puntos</span>
+<span class="comment">%         diff_long_x = (Subject{1}.phi_x(j,i) - Subject{1}.phi_x(j,i-1));</span>
+<span class="comment">%         diff_long_y = (Subject{1}.phi_y(j,i) - Subject{1}.phi_y(j,i-1));</span>
+<span class="comment">%         diff_long = sqrt( (diff_long_x)^2 + (diff_long_y)^2);</span>
+<span class="comment">%         led1 = led1 + diff_long;</span>
+<span class="comment">%     end</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% les1 = 0; %length myocardium at end systole</span>
+<span class="comment">% for j = endSystole %tiempo</span>
+<span class="comment">%     for i = 2:74 %puntos</span>
+<span class="comment">%         diff_long_x = (Subject{1}.phi_x(j,i) - Subject{1}.phi_x(j,i-1));</span>
+<span class="comment">%         diff_long_y = (Subject{1}.phi_y(j,i) - Subject{1}.phi_y(j,i-1));</span>
+<span class="comment">%         diff_long = sqrt( (diff_long_x)^2 + (diff_long_y)^2);</span>
+<span class="comment">%         les1 = les1 + diff_long;</span>
+<span class="comment">%     end</span>
+<span class="comment">% end</span>
+<span class="comment">% ratio1b=(led1-les1)/led1;</span>
+
+<span class="comment">% Subject 2</span>
+led2 = 0; <span class="comment">%length myocardium at end diastole</span>
+<span class="keyword">for</span> j = endDiastole <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:80 <span class="comment">% points</span>
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led2 = led2 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+les2 = 0; <span class="comment">%length myocardium at end systole</span>
+<span class="keyword">for</span> j = endSystole <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:80 <span class="comment">% points</span>
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les2 = les2 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+ratio2=(led2-les2)/led2;
+
+<span class="comment">% Subject 3</span>
+led3 = 0; <span class="comment">%length myocardium at end diastole</span>
+<span class="keyword">for</span> j = endDiastole <span class="comment">%time</span>
+    <span class="keyword">for</span> i = 2:70 <span class="comment">% points</span>
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led3 = led3 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+les3 = 0; <span class="comment">%length myocardium at end systole</span>
+<span class="keyword">for</span> j = endSystole <span class="comment">%time</span>
+    <span class="keyword">for</span> i = 2:70 <span class="comment">%points</span>
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les3 = les3 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+ratio3=(led3-les3)/led3;
+
+<span class="comment">% Subject 4</span>
+led4 = 0; <span class="comment">%length myocardium at end diastole</span>
+<span class="keyword">for</span> j = endDiastole <span class="comment">%time</span>
+    <span class="keyword">for</span> i = 2:36 <span class="comment">%points</span>
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led4 = led4 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+les4 = 0; <span class="comment">%length myocardium at end systole</span>
+<span class="keyword">for</span> j = endSystole <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:36 <span class="comment">% points</span>
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les4 = les4 + norm(diff_long);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+ratio4=(led4-les4)/led4;
+</pre><h2>Radial and longitudinal direction of the myocardial wall<a name="4"></a></h2><p>Subject 1</p><pre class="codeinput">e_long1 = zeros(83,75,2);
+e_radial1 = zeros(83,75,2);
+<span class="keyword">for</span> j = 1:83 <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:74 <span class="comment">% points</span>
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long);
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        <span class="keyword">if</span> i &lt; 75 / 2
+             e_long1(j,i,:) = tmp1;
+        <span class="keyword">else</span>
+            e_long1(j,i,:) = -tmp1;
+        <span class="keyword">end</span>
+        e_radial1(j,i,:) = tmp2;
+    <span class="keyword">end</span>
+    e_long1(j,1,:) = 0;
+    e_radial1(j,1,:) = 0;
+    e_long1(j,75,:) = 0;
+    e_radial1(j,75,:) = 0;
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 2</span>
+e_long2 = zeros(83,81,2);
+e_radial2 = zeros(83,81,2);
+<span class="keyword">for</span> j = 1:83 <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:80 <span class="comment">% points</span>
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long);
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        <span class="keyword">if</span> i &lt; 81 / 2
+             e_long2(j,i,:) = tmp1;
+        <span class="keyword">else</span>
+            e_long2(j,i,:) = -tmp1;
+        <span class="keyword">end</span>
+        e_radial2(j,i,:) = tmp2;
+    <span class="keyword">end</span>
+    e_long2(j,1,:) = 0;
+    e_radial2(j,1,:) = 0;
+    e_long2(j,81,:) = 0;
+    e_radial2(j,81,:) = 0;
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 3</span>
+e_long3 = zeros(83,71,2);
+e_radial3 = zeros(83,71,2);
+<span class="keyword">for</span> j = 1:83 <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:70 <span class="comment">% points</span>
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long);
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        <span class="keyword">if</span> i &lt; 71 / 2
+             e_long3(j,i,:) = tmp1;
+        <span class="keyword">else</span>
+            e_long3(j,i,:) = -tmp1;
+        <span class="keyword">end</span>
+        e_radial3(j,i,:) = tmp2;
+    <span class="keyword">end</span>
+    e_long3(j,1,:) = 0;
+    e_radial3(j,1,:) = 0;
+    e_long3(j,71,:) = 0;
+    e_radial3(j,71,:) = 0;
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 4</span>
+e_long4 = zeros(83,37,2);
+e_radial4 = zeros(83,37,2);
+<span class="keyword">for</span> j = 1:83 <span class="comment">% time</span>
+    <span class="keyword">for</span> i = 2:36 <span class="comment">% points</span>
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long);
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        <span class="keyword">if</span> i &lt; 37 / 2
+             e_long4(j,i,:) = tmp1;
+        <span class="keyword">else</span>
+            e_long4(j,i,:) = -tmp1;
+        <span class="keyword">end</span>
+        e_radial4(j,i,:) = tmp2;
+    <span class="keyword">end</span>
+    e_long4(j,1,:) = 0;
+    e_radial4(j,1,:) = 0;
+    e_long4(j,37,:) = 0;
+    e_radial4(j,37,:) = 0;
+<span class="keyword">end</span>
+
+<span class="comment">% Plot direction vectors of the 4 Subjects</span>
+figure;
+axis <span class="string">equal</span>;
+axis([-60,40,-120,0])
+subplot(2,2,1)
+hold <span class="string">on</span>
+quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_long1(1,:,1), e_long1(1,:,2),<span class="string">'r'</span>)
+quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_radial1(1,:,1), e_radial1(1,:,2),<span class="string">'b'</span>)
+legend(<span class="string">'Longitudinal direction'</span>,<span class="string">'Radial direction'</span>)
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+title(<span class="string">'Directions of each point at the beginning of the cycle of Subject 1'</span>)
+
+subplot(2,2,2)
+hold <span class="string">on</span>
+quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_long2(1,:,1), e_long2(1,:,2),<span class="string">'r'</span>)
+quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_radial2(1,:,1), e_radial2(1,:,2),<span class="string">'b'</span>)
+legend(<span class="string">'Longitudinal direction'</span>,<span class="string">'Radial direction'</span>)
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+title(<span class="string">'Directions of each point at the beginning of the cycle of Subject 2'</span>)
+
+subplot(2,2,3)
+hold <span class="string">on</span>
+quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_long3(1,:,1), e_long3(1,:,2),<span class="string">'r'</span>)
+quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_radial3(1,:,1), e_radial3(1,:,2),<span class="string">'b'</span>)
+legend(<span class="string">'Longitudinal direction'</span>,<span class="string">'Radial direction'</span>)
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+title(<span class="string">'Directions of each point at the beginning of the cycle of Subject 3'</span>)
+
+subplot(2,2,4)
+hold <span class="string">on</span>
+quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_long4(1,:,1), e_long4(1,:,2),<span class="string">'r'</span>)
+quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_radial4(1,:,1), e_radial4(1,:,2),<span class="string">'b'</span>)
+legend(<span class="string">'Longitudinal direction'</span>,<span class="string">'Radial direction'</span>)
+xlabel(<span class="string">'x coordinate'</span>)
+ylabel(<span class="string">'y coordinate'</span>)
+title(<span class="string">'Directions of each point at the beginning of the cycle of Subject 4'</span>)
+</pre><img vspace="5" hspace="5" src="Main_02.png" alt=""> <h2>Radial and Longitudinal Displacement Calculation<a name="5"></a></h2><pre class="codeinput"><span class="comment">% Subject 1</span>
+U_rl1 = zeros(83,75,2);
+<span class="keyword">for</span> j = 2:83 <span class="comment">%time</span>
+    <span class="keyword">for</span> i = 1:75 <span class="comment">%point</span>
+    u_x1(j,i) = Subject{1}.phi_x(j,i) - Subject{1}.phi_x(1,i);
+    u_y1(j,i) = Subject{1}.phi_y(j,i) - Subject{1}.phi_y(1,i);
+    tmp1 = [u_x1(j,i); u_y1(j,i)];
+    P1 = [e_radial1(j,i,1),e_long1(j,i,1);e_radial1(j,i,2),e_long1(j,i,2)];
+    <span class="comment">% Ax = b. One way to solve this is with x = inv(A)*b.</span>
+    <span class="comment">% A better way, from both an execution time and numerical accuracy</span>
+    <span class="comment">% standpoint, is to use the matrix division operator x = A\b.</span>
+    U_rl1(j,i,:) = inv(P1)*tmp1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 2</span>
+U_rl2 = zeros(83,81,2);
+<span class="keyword">for</span> j = 2:83 <span class="comment">%time</span>
+    <span class="keyword">for</span> i = 1:81 <span class="comment">%point</span>
+    u_x2(j,i) = Subject{2}.phi_x(j,i) - Subject{2}.phi_x(1,i);
+    u_y2(j,i) = Subject{2}.phi_y(j,i) - Subject{2}.phi_y(1,i);
+    tmp1 = [u_x2(j,i); u_y2(j,i)];
+    P1 = [e_radial2(j,i,1),e_long2(j,i,1);e_radial2(j,i,2),e_long2(j,i,2)];
+    U_rl2(j,i,:) = inv(P1)*tmp1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 3</span>
+U_rl3 = zeros(83,71,2);
+<span class="keyword">for</span> j = 2:83 <span class="comment">%time</span>
+    <span class="keyword">for</span> i = 1:71 <span class="comment">%point</span>
+    u_x3(j,i) = Subject{3}.phi_x(j,i) - Subject{3}.phi_x(1,i);
+    u_y3(j,i) = Subject{3}.phi_y(j,i) - Subject{3}.phi_y(1,i);
+    tmp1 = [u_x3(j,i); u_y3(j,i)];
+    P1 = [e_radial3(j,i,1),e_long3(j,i,1);e_radial3(j,i,2),e_long3(j,i,2)];
+    U_rl3(j,i,:) = inv(P1)*tmp1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 4</span>
+U_rl4 = zeros(83,37,2);
+<span class="keyword">for</span> j = 2:83 <span class="comment">%time</span>
+    <span class="keyword">for</span> i = 1:37 <span class="comment">%point</span>
+    u_x4(j,i) = Subject{4}.phi_x(j,i) - Subject{4}.phi_x(1,i);
+    u_y4(j,i) = Subject{4}.phi_y(j,i) - Subject{4}.phi_y(1,i);
+    tmp1 = [u_x4(j,i); u_y4(j,i)];
+    P1 = [e_radial4(j,i,1),e_long4(j,i,1);e_radial4(j,i,2),e_long4(j,i,2)];
+    U_rl4(j,i,:) = inv(P1)*tmp1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% RADIAL DISPLACEMENT OF 3 POINTS + LONGITUDINAL DISPLACEMENT OF 3 POINTS</span>
+figure;
+subplot(2,1,1)
+hold <span class="string">on</span>;
+axis([1,83,-5,16])
+plot(1:83,U_rl1(:,6,1));
+plot(1:83,U_rl1(:,19,1),<span class="string">'r'</span>);
+plot(1:83,U_rl1(:,31,1),<span class="string">'m'</span>);
+title(<span class="string">'Radial displacement at three different points of Subject 1'</span>)
+legend(<span class="string">'Point i=6'</span>,<span class="string">'Point i=19'</span>,<span class="string">'Point i=31'</span>)
+xlabel(<span class="string">'Number of frame'</span>)
+ylabel(<span class="string">'Displacement'</span>)
+subplot(2,1,2)
+hold <span class="string">on</span>;
+axis([1,83,-5,16])
+plot(1:83,U_rl1(:,6,2));
+plot(1:83,U_rl1(:,19,2),<span class="string">'r'</span>);
+plot(1:83,U_rl1(:,31,2),<span class="string">'m'</span>);
+title(<span class="string">'Longitudinal displacement at three different points of Subject 1'</span>)
+legend(<span class="string">'Point i=6'</span>,<span class="string">'Point i=19'</span>,<span class="string">'Point i=31'</span>)
+xlabel(<span class="string">'Number of frame'</span>)
+ylabel(<span class="string">'Displacement'</span>)
+
+<span class="comment">% Radial and longitudinal displacement for the 4 Subjects at mid-septal</span>
+<span class="comment">% level</span>
+figure;
+subplot(2,1,1)
+hold <span class="string">on</span>;
+axis([1,83,-5,10])
+plot(1:83,U_rl1(:,19,1));
+plot(1:83,U_rl2(:,20,1),<span class="string">'r'</span>);
+plot(1:83,U_rl3(:,18,1),<span class="string">'m'</span>);
+plot(1:83,U_rl4(:,9,1),<span class="string">'g'</span>);
+title(<span class="string">'Radial displacement at the mid-septal level'</span>)
+legend(<span class="string">'Subject 1'</span>,<span class="string">'Subject 2'</span>,<span class="string">'Subject 3'</span>,<span class="string">'Subject 4'</span>)
+xlabel(<span class="string">'Number of frame'</span>)
+ylabel(<span class="string">'Displacement'</span>)
+
+subplot(2,1,2)
+hold <span class="string">on</span>;
+axis <span class="string">equal</span>;
+axis([1,83,-5,10])
+plot(1:83,U_rl1(:,19,2));
+plot(1:83,U_rl2(:,20,2),<span class="string">'r'</span>);
+plot(1:83,U_rl3(:,18,2),<span class="string">'m'</span>);
+plot(1:83,U_rl4(:,9,2),<span class="string">'g'</span>);
+title(<span class="string">'Longitudinal displacement at the mid-septal level'</span>)
+legend(<span class="string">'Subject 1'</span>,<span class="string">'Subject 2'</span>,<span class="string">'Subject 3'</span>,<span class="string">'Subject 4'</span>)
+xlabel(<span class="string">'Number of frame'</span>)
+ylabel(<span class="string">'Displacement'</span>)
+
+<span class="comment">% Imagesc plot</span>
+figure
+h = subplot(2,4,1);
+imagesc(U_rl1(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-2,2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial displacement Subject 1'</span>)
+h = subplot(2,4,5);
+imagesc(U_rl1(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-5,5])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal displacement Subject 1'</span>)
+
+h = subplot(2,4,2);
+imagesc(U_rl2(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-2,2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial displacement Subject 2'</span>)
+h = subplot(2,4,6);
+imagesc(U_rl2(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-5,5])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal displacement Subject 2'</span>)
+
+h = subplot(2,4,3);
+imagesc(U_rl3(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-2,2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial displacement Subject 3'</span>)
+h = subplot(2,4,7);
+imagesc(U_rl3(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-5,5])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal displacement Subject 3'</span>)
+
+h = subplot(2,4,4);
+imagesc(U_rl4(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-2,2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial displacement Subject 4'</span>)
+h = subplot(2,4,8);
+imagesc(U_rl4(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-5,5])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal displacement Subject 4'</span>)
+</pre><img vspace="5" hspace="5" src="Main_03.png" alt=""> <img vspace="5" hspace="5" src="Main_04.png" alt=""> <img vspace="5" hspace="5" src="Main_05.png" alt=""> <h2>Radial and Longitudinal Velocity Calculation<a name="6"></a></h2><pre class="codeinput"><span class="comment">% Subject 1</span>
+V_rl1 = zeros(82,75,2);
+<span class="keyword">for</span> i = 1:75
+    V_rl1(:,i,1)= diff(U_rl1(:,i,1))/timeInterval;
+    V_rl1(:,i,2)= diff(U_rl1(:,i,2))/timeInterval;
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 2</span>
+V_rl2 = zeros(82,81,2);
+<span class="keyword">for</span> i = 1:81
+    V_rl2(:,i,1)= diff(U_rl2(:,i,1))/timeInterval;
+    V_rl2(:,i,2)= diff(U_rl2(:,i,2))/timeInterval;
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 3</span>
+V_rl3 = zeros(82,71,2);
+<span class="keyword">for</span> i = 1:71
+    V_rl3(:,i,1)= diff(U_rl3(:,i,1))/timeInterval;
+    V_rl3(:,i,2)= diff(U_rl3(:,i,2))/timeInterval;
+<span class="keyword">end</span>
+
+<span class="comment">% Subject 4</span>
+V_rl4 = zeros(82,37,2);
+<span class="keyword">for</span> i = 1:37
+    V_rl4(:,i,1)= diff(U_rl4(:,i,1))/timeInterval;
+    V_rl4(:,i,2)= diff(U_rl4(:,i,2))/timeInterval;
+<span class="keyword">end</span>
+
+<span class="comment">% Radial velocity plot (spatiotemporal information using meshgrid)</span>
+ figure
+ tiempo = 1:82;
+ subplot(2,2,1)
+ puntos = 1:75;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl1(:,:,1));
+ axis([1 75 1 82 -150 150]);
+ title(<span class="string">'Radial velocity Subject 1'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+ subplot(2,2,2)
+ puntos = 1:81;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,1));
+ axis([1 71 1 82 -150 150]);
+ title(<span class="string">'Radial velocity Subject 2'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+ subplot(2,2,3)
+ puntos = 1:71;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl3(:,:,1));
+ axis([1 71 1 82 -150 150]);
+ title(<span class="string">'Radial velocity Subject 3'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+ subplot(2,2,4)
+ puntos = 1:37;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,1));
+ axis([1 37 1 82 -150 150]);
+ title(<span class="string">'Radial velocity Subject 4'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+ <span class="comment">% Longitudinal velocity plot (spatiotemporal information)</span>
+ figure
+ tiempo = 1:82;
+ subplot(2,2,1)
+ puntos = 1:75;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl1(:,:,2));
+ axis([1 75 1 82 -200 200]);
+ title(<span class="string">'Longitudinal velocity Subject 1'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+ subplot(2,2,2)
+ puntos = 1:81;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,2));
+ axis([1 71 1 82 -200 200]);
+ title(<span class="string">'Longitudinal velocity Subject 2'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+ subplot(2,2,3)
+ puntos = 1:71;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl3(:,:,2));
+ axis([1 71 1 82 -200 200]);
+ title(<span class="string">'Longitudinal velocity Subject 3'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+ subplot(2,2,4)
+ puntos = 1:37;
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,2));
+ axis([1 37 1 82 -200 200]);
+ title(<span class="string">'Longitudinal velocity Subject 4'</span>)
+ xlabel(<span class="string">'points'</span>)
+ ylabel(<span class="string">'time frames'</span>)
+ zlabel(<span class="string">'velocity'</span>)
+
+<span class="comment">% Spatiotemporal radial &amp; longitudinal velocity Subject of 1 (plotshaded)</span>
+x=1:82;
+y = zeros(2,82); <span class="comment">% radial</span>
+z = zeros(2,82); <span class="comment">% longitudinal</span>
+<span class="keyword">for</span> j = 1:82
+        y(1,j) = (max(V_rl1(j,2:74,1)))';
+        y(2,j) = (min(V_rl1(j,2:74,1)))';
+        z(1,j) = (max(V_rl1(j,2:74,2)))';
+        z(2,j) = (min(V_rl1(j,2:74,2)))';
+<span class="keyword">end</span>
+T_V_rl1 = zeros(82,2);
+<span class="keyword">for</span> i = 1:82
+        T_V_rl1(i,1) = sum(V_rl1(i,2:74,1))/75;
+        T_V_rl1(i,2) = sum(V_rl1(i,2:74,2))/75;
+<span class="keyword">end</span>
+figure
+hold <span class="string">on</span>;
+axis([1,82,-250,250])
+plotshaded(x,y,<span class="string">'r'</span>);
+plotshaded(x,z,<span class="string">'b'</span>);
+legend(<span class="string">'Radial velocity'</span>,<span class="string">'Longitudinal velocity'</span>)
+plot(1:82,T_V_rl1(:,1),<span class="string">'r'</span>);
+plot(1:82,T_V_rl1(:,2),<span class="string">'b'</span>);
+title(<span class="string">'Spatiotemporal representation of velocity Subject 1'</span>)
+xlabel(<span class="string">'Number of frame'</span>)
+ylabel(<span class="string">'velocity'</span>)
+
+<span class="comment">% Radial and longitudinal velocity plot (imagesc)</span>
+figure
+h = subplot(2,4,1);
+imagesc(V_rl1(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial velocity Subject 1'</span>)
+h = subplot(2,4,5);
+imagesc(V_rl1(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal velocity Subject 1'</span>)
+
+h = subplot(2,4,2);
+imagesc(V_rl2(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial velocity Subject 2'</span>)
+h = subplot(2,4,6);
+imagesc(V_rl2(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal velocity Subject 2'</span>)
+
+h = subplot(2,4,3);
+imagesc(V_rl3(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial velocity Subject 3'</span>)
+h = subplot(2,4,7);
+imagesc(V_rl3(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal velocity Subject 3'</span>)
+
+h = subplot(2,4,4);
+imagesc(V_rl4(:,:,1)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Radial velocity Subject 4'</span>)
+h = subplot(2,4,8);
+imagesc(V_rl4(:,:,2)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-50,50])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Longitudinal velocity Subject 4'</span>)
+</pre><img vspace="5" hspace="5" src="Main_06.png" alt=""> <img vspace="5" hspace="5" src="Main_07.png" alt=""> <img vspace="5" hspace="5" src="Main_08.png" alt=""> <img vspace="5" hspace="5" src="Main_09.png" alt=""> <h2>Strain Calculation<a name="7"></a></h2><pre class="codeinput"><span class="comment">% Subject 1</span>
+E1 = zeros(83,75);
+<span class="keyword">for</span> j = 1:83 <span class="comment">%tiempo</span>
+    <span class="keyword">for</span> i = 2:74 <span class="comment">%puntos</span>
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{1}.phi_x(1,i+1) - Subject{1}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{1}.phi_y(1,i+1) - Subject{1}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E1(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% STRAIN OF Subject 2</span>
+E2 = zeros(83,81);
+<span class="keyword">for</span> j = 1:83 <span class="comment">%tiempo</span>
+    <span class="keyword">for</span> i = 2:80 <span class="comment">%puntos</span>
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{2}.phi_x(1,i+1) - Subject{2}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{2}.phi_y(1,i+1) - Subject{2}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E2(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% STRAIN OF Subject 3</span>
+E3 = zeros(83,71);
+<span class="keyword">for</span> j = 1:83 <span class="comment">%tiempo</span>
+    <span class="keyword">for</span> i = 2:70 <span class="comment">%puntos</span>
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{3}.phi_x(1,i+1) - Subject{3}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{3}.phi_y(1,i+1) - Subject{3}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E3(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% STRAIN OF Subject 4</span>
+E4=zeros(83,37);
+<span class="keyword">for</span> j = 1:83 <span class="comment">%tiempo</span>
+    <span class="keyword">for</span> i = 2:36 <span class="comment">%puntos</span>
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{4}.phi_x(1,i+1) - Subject{4}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{4}.phi_y(1,i+1) - Subject{4}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E4(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Visualize the strain along the whole cycle for point i=19 for</span>
+<span class="comment">% Subject 1, point i=20 for Subject 2, point i=18 for Subject 3 and point</span>
+<span class="comment">% i=9 for Subject 4</span>
+figure;
+hold <span class="string">on</span>;
+axis([1,83,-0.25,0.05]);
+plot(1:83,E1(:,19));
+plot(1:83,E2(:,20),<span class="string">'r'</span>);
+plot(1:83,E3(:,18),<span class="string">'m'</span>);
+plot(1:83,E4(:,9),<span class="string">'g'</span>);
+title(<span class="string">'Strain at the mid-septal level of all Subjects'</span>)
+legend(<span class="string">'Subject 1'</span>,<span class="string">'Subject 2'</span>,<span class="string">'Subject 3'</span>,<span class="string">'Subject 4'</span>)
+xlabel(<span class="string">'Number of frame'</span>)
+ylabel(<span class="string">'Strain'</span>)
+
+<span class="comment">% Spatiotemporal strain plot of the 4 Subjects using imagesc function</span>
+figure
+h = subplot(1,4,1);
+imagesc(E1(:,:)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-0.2,0.2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Strain Subject 1'</span>)
+
+h = subplot(1,4,2);
+imagesc(E2(:,:)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-0.2,0.2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Strain Subject 2'</span>)
+
+h = subplot(1,4,3);
+imagesc(E3(:,:)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-0.2,0.2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Strain Subject 3'</span>)
+
+h = subplot(1,4,4);
+imagesc(E4(:,:)')
+axis <span class="string">manual</span>
+axis <span class="string">square</span>
+set(h,<span class="string">'CLim'</span>,[-0.2,0.2])
+xlabel(<span class="string">'time frames'</span>)
+ylabel(<span class="string">'points'</span>)
+title(<span class="string">'Strain Subject 4'</span>)
+</pre><img vspace="5" hspace="5" src="Main_10.png" alt=""> <img vspace="5" hspace="5" src="Main_11.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% SHAPE, MOTION AND DEFORMATION ANALYSIS OF 2D ECHOCARDIOGRAPHIC SEQUENCES
+% Drag your data into the workspace to begin the analysis. 
+clc;
+close all; 
+warning('off', 'MATLAB:singularMatrix')
+%% Myocardial shape at the beginning of the cycle, at end of the systole and at end of the diastole
+
+% Subject 1 Myocardial shape
+figure;
+subplot(2,2,1);
+hold on;
+axis equal
+axis([-60,40,-120,0])
+title('Subject 1');
+plot(Subject{1}.phi_x(1,:),Subject{1}.phi_y(1,:),'Marker','x');
+plot(Subject{1}.phi_x(endSystole,:),Subject{1}.phi_y(endSystole,:),'r');
+plot(Subject{1}.phi_x(endDiastole,:),Subject{1}.phi_y(endDiastole,:),'g');
+legend('t=1','End systole','End diastole');
+xlabel('x coordinate')
+ylabel('y coordinate')
+
+% Subject 2 Myocardial shape
+subplot(2,2,2);
+hold on;
+axis equal
+axis([-60,40,-120,0])
+title('Subject 2');
+plot(Subject{2}.phi_x(1,:),Subject{2}.phi_y(1,:),'Marker','x');
+plot(Subject{2}.phi_x(endSystole,:),Subject{2}.phi_y(endSystole,:),'r');
+plot(Subject{2}.phi_x(endDiastole,:),Subject{2}.phi_y(endDiastole,:),'g');
+xlabel('x coordinate')
+ylabel('y coordinate')
+
+% Subject 3 Myocardial shape
+subplot(2,2,3);
+hold on;
+axis equal
+axis([-60,40,-120,0])
+title('Subject 3');
+plot(Subject{3}.phi_x(1,:),Subject{3}.phi_y(1,:),'Marker','x');
+plot(Subject{3}.phi_x(endSystole,:),Subject{3}.phi_y(endSystole,:),'r');
+plot(Subject{3}.phi_x(endDiastole,:),Subject{3}.phi_y(endDiastole,:),'g');
+xlabel('x coordinate')
+ylabel('y coordinate')
+
+% Subject 4 Myocardial shape
+subplot(2,2,4);
+hold on;
+axis equal
+axis([-60,40,-120,0])
+title('Subject 4');
+plot(Subject{4}.phi_x(1,:),Subject{4}.phi_y(1,:),'Marker','x');
+plot(Subject{4}.phi_x(endSystole,:),Subject{4}.phi_y(endSystole,:),'r');
+plot(Subject{4}.phi_x(endDiastole,:),Subject{4}.phi_y(endDiastole,:),'g');
+xlabel('x coordinate')
+ylabel('y coordinate')
+
+%% Total length of the entire myocardial shape at end-systole (les, at end-diastole (led) and ratio. 
+
+% Subject 1 
+led1 = 0; %length myocardium at end diastole
+for j = endDiastole % time
+    for i = 2:74 % points
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led1 = led1 + norm(diff_long);
+    end 
+end
+les1 = 0; % length myocardium at end systole
+for j = endSystole %
+    for i = 2:74 
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les1 = les1 + norm(diff_long);
+    end 
+end
+ratio1=(led1-les1)/led1;
+%Another aproximation of longitud with slyghtly different results
+% led1 = 0; %length myocardium at end diastole
+% for j = endDiastole %tiempo
+%     for i = 2:74 %puntos
+%         diff_long_x = (Subject{1}.phi_x(j,i) - Subject{1}.phi_x(j,i-1));
+%         diff_long_y = (Subject{1}.phi_y(j,i) - Subject{1}.phi_y(j,i-1));
+%         diff_long = sqrt( (diff_long_x)^2 + (diff_long_y)^2);
+%         led1 = led1 + diff_long;
+%     end 
+% end
+% 
+% les1 = 0; %length myocardium at end systole
+% for j = endSystole %tiempo
+%     for i = 2:74 %puntos
+%         diff_long_x = (Subject{1}.phi_x(j,i) - Subject{1}.phi_x(j,i-1));
+%         diff_long_y = (Subject{1}.phi_y(j,i) - Subject{1}.phi_y(j,i-1));
+%         diff_long = sqrt( (diff_long_x)^2 + (diff_long_y)^2);
+%         les1 = les1 + diff_long;
+%     end 
+% end
+% ratio1b=(led1-les1)/led1;
+
+% Subject 2
+led2 = 0; %length myocardium at end diastole
+for j = endDiastole % time
+    for i = 2:80 % points
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led2 = led2 + norm(diff_long);
+    end 
+end
+les2 = 0; %length myocardium at end systole
+for j = endSystole % time
+    for i = 2:80 % points
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les2 = les2 + norm(diff_long);
+    end 
+end
+ratio2=(led2-les2)/led2;
+
+% Subject 3
+led3 = 0; %length myocardium at end diastole
+for j = endDiastole %time
+    for i = 2:70 % points
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led3 = led3 + norm(diff_long);
+    end 
+end
+les3 = 0; %length myocardium at end systole
+for j = endSystole %time
+    for i = 2:70 %points
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les3 = les3 + norm(diff_long);
+    end 
+end
+ratio3=(led3-les3)/led3;
+
+% Subject 4
+led4 = 0; %length myocardium at end diastole
+for j = endDiastole %time
+    for i = 2:36 %points
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        led4 = led4 + norm(diff_long);
+    end 
+end
+les4 = 0; %length myocardium at end systole
+for j = endSystole % time
+    for i = 2:36 % points
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        les4 = les4 + norm(diff_long);
+    end 
+end
+ratio4=(led4-les4)/led4;
+
+%% Radial and longitudinal direction of the myocardial wall 
+% Subject 1 
+e_long1 = zeros(83,75,2);
+e_radial1 = zeros(83,75,2);
+for j = 1:83 % time
+    for i = 2:74 % points
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long); 
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        if i < 75 / 2 
+             e_long1(j,i,:) = tmp1;
+        else
+            e_long1(j,i,:) = -tmp1;
+        end
+        e_radial1(j,i,:) = tmp2;
+    end
+    e_long1(j,1,:) = 0;
+    e_radial1(j,1,:) = 0;
+    e_long1(j,75,:) = 0;
+    e_radial1(j,75,:) = 0;
+end
+
+% Subject 2 
+e_long2 = zeros(83,81,2);
+e_radial2 = zeros(83,81,2);
+for j = 1:83 % time
+    for i = 2:80 % points
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long); 
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        if i < 81 / 2 
+             e_long2(j,i,:) = tmp1;
+        else
+            e_long2(j,i,:) = -tmp1;
+        end
+        e_radial2(j,i,:) = tmp2;
+    end
+    e_long2(j,1,:) = 0;
+    e_radial2(j,1,:) = 0;
+    e_long2(j,81,:) = 0;
+    e_radial2(j,81,:) = 0;
+end
+
+% Subject 3 
+e_long3 = zeros(83,71,2);
+e_radial3 = zeros(83,71,2);
+for j = 1:83 % time
+    for i = 2:70 % points
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long); 
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        if i < 71 / 2 
+             e_long3(j,i,:) = tmp1;
+        else
+            e_long3(j,i,:) = -tmp1;
+        end
+        e_radial3(j,i,:) = tmp2;
+    end
+    e_long3(j,1,:) = 0;
+    e_radial3(j,1,:) = 0;
+    e_long3(j,71,:) = 0;
+    e_radial3(j,71,:) = 0;
+end
+
+% Subject 4 
+e_long4 = zeros(83,37,2);
+e_radial4 = zeros(83,37,2);
+for j = 1:83 % time
+    for i = 2:36 % points
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        tmp1 = diff_long / norm(diff_long); 
+        tmp2 = [0, -1; 1, 0 ] * tmp1';
+        if i < 37 / 2 
+             e_long4(j,i,:) = tmp1;
+        else
+            e_long4(j,i,:) = -tmp1;
+        end
+        e_radial4(j,i,:) = tmp2;
+    end
+    e_long4(j,1,:) = 0;
+    e_radial4(j,1,:) = 0;
+    e_long4(j,37,:) = 0;
+    e_radial4(j,37,:) = 0;
+end
+
+% Plot direction vectors of the 4 Subjects 
+figure;
+axis equal;
+axis([-60,40,-120,0])
+subplot(2,2,1) 
+hold on 
+quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_long1(1,:,1), e_long1(1,:,2),'r')
+quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_radial1(1,:,1), e_radial1(1,:,2),'b')
+legend('Longitudinal direction','Radial direction')
+xlabel('x coordinate')
+ylabel('y coordinate')
+title('Directions of each point at the beginning of the cycle of Subject 1')
+
+subplot(2,2,2) 
+hold on 
+quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_long2(1,:,1), e_long2(1,:,2),'r')
+quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_radial2(1,:,1), e_radial2(1,:,2),'b')
+legend('Longitudinal direction','Radial direction')
+xlabel('x coordinate')
+ylabel('y coordinate')
+title('Directions of each point at the beginning of the cycle of Subject 2')
+
+subplot(2,2,3) 
+hold on 
+quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_long3(1,:,1), e_long3(1,:,2),'r')
+quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_radial3(1,:,1), e_radial3(1,:,2),'b')
+legend('Longitudinal direction','Radial direction')
+xlabel('x coordinate')
+ylabel('y coordinate')
+title('Directions of each point at the beginning of the cycle of Subject 3')
+
+subplot(2,2,4) 
+hold on 
+quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_long4(1,:,1), e_long4(1,:,2),'r')
+quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_radial4(1,:,1), e_radial4(1,:,2),'b')
+legend('Longitudinal direction','Radial direction')
+xlabel('x coordinate')
+ylabel('y coordinate')
+title('Directions of each point at the beginning of the cycle of Subject 4')
+
+%% Radial and Longitudinal Displacement Calculation 
+
+% Subject 1 
+U_rl1 = zeros(83,75,2);
+for j = 2:83 %time
+    for i = 1:75 %point
+    u_x1(j,i) = Subject{1}.phi_x(j,i) - Subject{1}.phi_x(1,i);
+    u_y1(j,i) = Subject{1}.phi_y(j,i) - Subject{1}.phi_y(1,i);
+    tmp1 = [u_x1(j,i); u_y1(j,i)];
+    P1 = [e_radial1(j,i,1),e_long1(j,i,1);e_radial1(j,i,2),e_long1(j,i,2)];
+    % Ax = b. One way to solve this is with x = inv(A)*b. 
+    % A better way, from both an execution time and numerical accuracy 
+    % standpoint, is to use the matrix division operator x = A\b.
+    U_rl1(j,i,:) = inv(P1)*tmp1;
+    end
+end
+
+% Subject 2
+U_rl2 = zeros(83,81,2);
+for j = 2:83 %time
+    for i = 1:81 %point
+    u_x2(j,i) = Subject{2}.phi_x(j,i) - Subject{2}.phi_x(1,i);
+    u_y2(j,i) = Subject{2}.phi_y(j,i) - Subject{2}.phi_y(1,i);
+    tmp1 = [u_x2(j,i); u_y2(j,i)];
+    P1 = [e_radial2(j,i,1),e_long2(j,i,1);e_radial2(j,i,2),e_long2(j,i,2)];
+    U_rl2(j,i,:) = inv(P1)*tmp1;
+    end
+end
+
+% Subject 3
+U_rl3 = zeros(83,71,2);
+for j = 2:83 %time
+    for i = 1:71 %point
+    u_x3(j,i) = Subject{3}.phi_x(j,i) - Subject{3}.phi_x(1,i);
+    u_y3(j,i) = Subject{3}.phi_y(j,i) - Subject{3}.phi_y(1,i);
+    tmp1 = [u_x3(j,i); u_y3(j,i)];
+    P1 = [e_radial3(j,i,1),e_long3(j,i,1);e_radial3(j,i,2),e_long3(j,i,2)];
+    U_rl3(j,i,:) = inv(P1)*tmp1;
+    end
+end
+
+% Subject 4
+U_rl4 = zeros(83,37,2);
+for j = 2:83 %time
+    for i = 1:37 %point
+    u_x4(j,i) = Subject{4}.phi_x(j,i) - Subject{4}.phi_x(1,i);
+    u_y4(j,i) = Subject{4}.phi_y(j,i) - Subject{4}.phi_y(1,i);
+    tmp1 = [u_x4(j,i); u_y4(j,i)];
+    P1 = [e_radial4(j,i,1),e_long4(j,i,1);e_radial4(j,i,2),e_long4(j,i,2)];
+    U_rl4(j,i,:) = inv(P1)*tmp1;
+    end
+end
+
+% RADIAL DISPLACEMENT OF 3 POINTS + LONGITUDINAL DISPLACEMENT OF 3 POINTS
+figure;
+subplot(2,1,1)
+hold on;
+axis([1,83,-5,16])
+plot(1:83,U_rl1(:,6,1));
+plot(1:83,U_rl1(:,19,1),'r');
+plot(1:83,U_rl1(:,31,1),'m');
+title('Radial displacement at three different points of Subject 1')
+legend('Point i=6','Point i=19','Point i=31')
+xlabel('Number of frame')
+ylabel('Displacement')
+subplot(2,1,2)
+hold on;
+axis([1,83,-5,16])
+plot(1:83,U_rl1(:,6,2));
+plot(1:83,U_rl1(:,19,2),'r');
+plot(1:83,U_rl1(:,31,2),'m');
+title('Longitudinal displacement at three different points of Subject 1')
+legend('Point i=6','Point i=19','Point i=31')
+xlabel('Number of frame')
+ylabel('Displacement')
+
+% Radial and longitudinal displacement for the 4 Subjects at mid-septal
+% level
+figure;
+subplot(2,1,1)
+hold on;
+axis([1,83,-5,10])
+plot(1:83,U_rl1(:,19,1));
+plot(1:83,U_rl2(:,20,1),'r');
+plot(1:83,U_rl3(:,18,1),'m');
+plot(1:83,U_rl4(:,9,1),'g');
+title('Radial displacement at the mid-septal level')
+legend('Subject 1','Subject 2','Subject 3','Subject 4')
+xlabel('Number of frame')
+ylabel('Displacement')
+
+subplot(2,1,2)
+hold on;
+axis equal;
+axis([1,83,-5,10])
+plot(1:83,U_rl1(:,19,2));
+plot(1:83,U_rl2(:,20,2),'r');
+plot(1:83,U_rl3(:,18,2),'m');
+plot(1:83,U_rl4(:,9,2),'g');
+title('Longitudinal displacement at the mid-septal level')
+legend('Subject 1','Subject 2','Subject 3','Subject 4')
+xlabel('Number of frame')
+ylabel('Displacement')
+
+% Imagesc plot 
+figure 
+h = subplot(2,4,1);
+imagesc(U_rl1(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-2,2])
+xlabel('time frames')
+ylabel('points')
+title('Radial displacement Subject 1') 
+h = subplot(2,4,5);
+imagesc(U_rl1(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-5,5])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal displacement Subject 1') 
+
+h = subplot(2,4,2);
+imagesc(U_rl2(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-2,2])
+xlabel('time frames')
+ylabel('points')
+title('Radial displacement Subject 2') 
+h = subplot(2,4,6); 
+imagesc(U_rl2(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-5,5])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal displacement Subject 2') 
+
+h = subplot(2,4,3); 
+imagesc(U_rl3(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-2,2])
+xlabel('time frames')
+ylabel('points')
+title('Radial displacement Subject 3') 
+h = subplot(2,4,7);
+imagesc(U_rl3(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-5,5])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal displacement Subject 3') 
+
+h = subplot(2,4,4);
+imagesc(U_rl4(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-2,2])
+xlabel('time frames')
+ylabel('points')
+title('Radial displacement Subject 4') 
+h = subplot(2,4,8); 
+imagesc(U_rl4(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-5,5])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal displacement Subject 4') 
+
+%%  Radial and Longitudinal Velocity Calculation
+
+% Subject 1 
+V_rl1 = zeros(82,75,2);
+for i = 1:75
+    V_rl1(:,i,1)= diff(U_rl1(:,i,1))/timeInterval;
+    V_rl1(:,i,2)= diff(U_rl1(:,i,2))/timeInterval;
+end 
+
+% Subject 2 
+V_rl2 = zeros(82,81,2);
+for i = 1:81
+    V_rl2(:,i,1)= diff(U_rl2(:,i,1))/timeInterval;
+    V_rl2(:,i,2)= diff(U_rl2(:,i,2))/timeInterval;
+end 
+
+% Subject 3 
+V_rl3 = zeros(82,71,2);
+for i = 1:71
+    V_rl3(:,i,1)= diff(U_rl3(:,i,1))/timeInterval;
+    V_rl3(:,i,2)= diff(U_rl3(:,i,2))/timeInterval;
+end 
+
+% Subject 4 
+V_rl4 = zeros(82,37,2);
+for i = 1:37
+    V_rl4(:,i,1)= diff(U_rl4(:,i,1))/timeInterval;
+    V_rl4(:,i,2)= diff(U_rl4(:,i,2))/timeInterval;
+end 
+
+% Radial velocity plot (spatiotemporal information using meshgrid)
+ figure
+ tiempo = 1:82;
+ subplot(2,2,1) 
+ puntos = 1:75; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl1(:,:,1));
+ axis([1 75 1 82 -150 150]);
+ title('Radial velocity Subject 1') 
+ xlabel('points')
+ ylabel('time frames') 
+ zlabel('velocity') 
+
+ subplot(2,2,2) 
+ puntos = 1:81; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,1));
+ axis([1 71 1 82 -150 150]);
+ title('Radial velocity Subject 2') 
+ xlabel('points')
+ ylabel('time frames') 
+ zlabel('velocity') 
+ 
+ subplot(2,2,3) 
+ puntos = 1:71; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl3(:,:,1));
+ axis([1 71 1 82 -150 150]);
+ title('Radial velocity Subject 3') 
+ xlabel('points')
+ ylabel('time frames') 
+ zlabel('velocity')
+ 
+ subplot(2,2,4) 
+ puntos = 1:37; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,1));
+ axis([1 37 1 82 -150 150]);
+ title('Radial velocity Subject 4') 
+ xlabel('points')
+ ylabel('time frames') 
+ zlabel('velocity')
+ 
+ % Longitudinal velocity plot (spatiotemporal information) 
+ figure
+ tiempo = 1:82;
+ subplot(2,2,1) 
+ puntos = 1:75; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl1(:,:,2));
+ axis([1 75 1 82 -200 200]);
+ title('Longitudinal velocity Subject 1') 
+ xlabel('points')
+ ylabel('time frames') 
+ zlabel('velocity') 
+
+ subplot(2,2,2) 
+ puntos = 1:81; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,2));
+ axis([1 71 1 82 -200 200]);
+ title('Longitudinal velocity Subject 2') 
+ xlabel('points')
+ ylabel('time frames') 
+ zlabel('velocity') 
+ 
+ subplot(2,2,3) 
+ puntos = 1:71; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl3(:,:,2));
+ axis([1 71 1 82 -200 200]);
+ title('Longitudinal velocity Subject 3') 
+ xlabel('points')
+ ylabel('time frames')  
+ zlabel('velocity')
+ 
+ subplot(2,2,4) 
+ puntos = 1:37; 
+ meshgrid(tiempo,puntos);
+ h = surf(V_rl2(:,:,2));
+ axis([1 37 1 82 -200 200]);
+ title('Longitudinal velocity Subject 4') 
+ xlabel('points')
+ ylabel('time frames') 
+ zlabel('velocity')
+ 
+% Spatiotemporal radial & longitudinal velocity Subject of 1 (plotshaded)
+x=1:82;
+y = zeros(2,82); % radial 
+z = zeros(2,82); % longitudinal
+for j = 1:82
+        y(1,j) = (max(V_rl1(j,2:74,1)))';
+        y(2,j) = (min(V_rl1(j,2:74,1)))';
+        z(1,j) = (max(V_rl1(j,2:74,2)))';
+        z(2,j) = (min(V_rl1(j,2:74,2)))';
+end 
+T_V_rl1 = zeros(82,2);
+for i = 1:82
+        T_V_rl1(i,1) = sum(V_rl1(i,2:74,1))/75; 
+        T_V_rl1(i,2) = sum(V_rl1(i,2:74,2))/75;
+end 
+figure 
+hold on;
+axis([1,82,-250,250])
+plotshaded(x,y,'r');
+plotshaded(x,z,'b');
+legend('Radial velocity','Longitudinal velocity')
+plot(1:82,T_V_rl1(:,1),'r');
+plot(1:82,T_V_rl1(:,2),'b');
+title('Spatiotemporal representation of velocity Subject 1')
+xlabel('Number of frame')
+ylabel('velocity')
+
+% Radial and longitudinal velocity plot (imagesc)
+figure 
+h = subplot(2,4,1); 
+imagesc(V_rl1(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Radial velocity Subject 1') 
+h = subplot(2,4,5); 
+imagesc(V_rl1(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal velocity Subject 1') 
+
+h = subplot(2,4,2); 
+imagesc(V_rl2(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Radial velocity Subject 2') 
+h = subplot(2,4,6); 
+imagesc(V_rl2(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal velocity Subject 2') 
+
+h = subplot(2,4,3); 
+imagesc(V_rl3(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Radial velocity Subject 3') 
+h = subplot(2,4,7);
+imagesc(V_rl3(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal velocity Subject 3') 
+
+h = subplot(2,4,4); 
+imagesc(V_rl4(:,:,1)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Radial velocity Subject 4') 
+h = subplot(2,4,8);
+imagesc(V_rl4(:,:,2)') 
+axis manual
+axis square
+set(h,'CLim',[-50,50])
+xlabel('time frames')
+ylabel('points')
+title('Longitudinal velocity Subject 4') 
+
+%% Strain Calculation 
+
+% Subject 1
+E1 = zeros(83,75);
+for j = 1:83 %tiempo
+    for i = 2:74 %puntos
+        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{1}.phi_x(1,i+1) - Subject{1}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{1}.phi_y(1,i+1) - Subject{1}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E1(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    end
+end
+
+% STRAIN OF Subject 2
+E2 = zeros(83,81);
+for j = 1:83 %tiempo
+    for i = 2:80 %puntos
+        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{2}.phi_x(1,i+1) - Subject{2}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{2}.phi_y(1,i+1) - Subject{2}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E2(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    end
+end
+
+% STRAIN OF Subject 3
+E3 = zeros(83,71);
+for j = 1:83 %tiempo
+    for i = 2:70 %puntos
+        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{3}.phi_x(1,i+1) - Subject{3}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{3}.phi_y(1,i+1) - Subject{3}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E3(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    end
+end
+
+% STRAIN OF Subject 4
+E4=zeros(83,37);
+for j = 1:83 %tiempo
+    for i = 2:36 %puntos
+        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
+        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
+        diff_long_x_inicial = (Subject{4}.phi_x(1,i+1) - Subject{4}.phi_x(1,i-1))/2;
+        diff_long_y_inicial = (Subject{4}.phi_y(1,i+1) - Subject{4}.phi_y(1,i-1))/2;
+        diff_long = [diff_long_x,diff_long_y];
+        diff_long_inicial = [diff_long_x_inicial,diff_long_y_inicial];
+        E4(j,i) = ((norm(diff_long))-(norm(diff_long_inicial)))/(norm(diff_long_inicial));
+    end
+end
+
+% Visualize the strain along the whole cycle for point i=19 for
+% Subject 1, point i=20 for Subject 2, point i=18 for Subject 3 and point
+% i=9 for Subject 4
+figure;
+hold on;
+axis([1,83,-0.25,0.05]);
+plot(1:83,E1(:,19));
+plot(1:83,E2(:,20),'r');
+plot(1:83,E3(:,18),'m');
+plot(1:83,E4(:,9),'g');
+title('Strain at the mid-septal level of all Subjects')
+legend('Subject 1','Subject 2','Subject 3','Subject 4')
+xlabel('Number of frame')
+ylabel('Strain')
+
+% Spatiotemporal strain plot of the 4 Subjects using imagesc function
+figure
+h = subplot(1,4,1); 
+imagesc(E1(:,:)') 
+axis manual
+axis square
+set(h,'CLim',[-0.2,0.2])
+xlabel('time frames')
+ylabel('points')
+title('Strain Subject 1') 
+
+h = subplot(1,4,2);
+imagesc(E2(:,:)') 
+axis manual
+axis square
+set(h,'CLim',[-0.2,0.2])
+xlabel('time frames')
+ylabel('points')
+title('Strain Subject 2') 
+
+h = subplot(1,4,3); 
+imagesc(E3(:,:)') 
+axis manual
+axis square
+set(h,'CLim',[-0.2,0.2])
+xlabel('time frames')
+ylabel('points')
+title('Strain Subject 3') 
+
+h = subplot(1,4,4);
+imagesc(E4(:,:)') 
+axis manual
+axis square
+set(h,'CLim',[-0.2,0.2])
+xlabel('time frames')
+ylabel('points')
+title('Strain Subject 4') 
+
+
+##### SOURCE END #####
+--></body></html>
