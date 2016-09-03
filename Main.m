@@ -3,167 +3,24 @@
 clc;
 close all; 
 warning('off', 'MATLAB:singularMatrix')
-%% Myocardial shape at the beginning of the cycle, at end of the systole and at end of the diastole
+%% Myocardial shape at the beginning of the cycle, at end of the systole
+%% and at end of the diastole for all the subjects
+PlotMyocardialShape(Subject, endSystole, endDiastole, [-60, 40, -120, 0])
 
-% Subject 1 Myocardial shape
-figure;
-subplot(2,2,1);
-hold on;
-axis equal
-axis([-60,40,-120,0])
-title('Subject 1');
-plot(Subject{1}.phi_x(1,:),Subject{1}.phi_y(1,:),'Marker','x');
-plot(Subject{1}.phi_x(endSystole,:),Subject{1}.phi_y(endSystole,:),'r');
-plot(Subject{1}.phi_x(endDiastole,:),Subject{1}.phi_y(endDiastole,:),'g');
-legend('t=1','End systole','End diastole');
-xlabel('x coordinate')
-ylabel('y coordinate')
-
-% Subject 2 Myocardial shape
-subplot(2,2,2);
-hold on;
-axis equal
-axis([-60,40,-120,0])
-title('Subject 2');
-plot(Subject{2}.phi_x(1,:),Subject{2}.phi_y(1,:),'Marker','x');
-plot(Subject{2}.phi_x(endSystole,:),Subject{2}.phi_y(endSystole,:),'r');
-plot(Subject{2}.phi_x(endDiastole,:),Subject{2}.phi_y(endDiastole,:),'g');
-xlabel('x coordinate')
-ylabel('y coordinate')
-
-% Subject 3 Myocardial shape
-subplot(2,2,3);
-hold on;
-axis equal
-axis([-60,40,-120,0])
-title('Subject 3');
-plot(Subject{3}.phi_x(1,:),Subject{3}.phi_y(1,:),'Marker','x');
-plot(Subject{3}.phi_x(endSystole,:),Subject{3}.phi_y(endSystole,:),'r');
-plot(Subject{3}.phi_x(endDiastole,:),Subject{3}.phi_y(endDiastole,:),'g');
-xlabel('x coordinate')
-ylabel('y coordinate')
-
-% Subject 4 Myocardial shape
-subplot(2,2,4);
-hold on;
-axis equal
-axis([-60,40,-120,0])
-title('Subject 4');
-plot(Subject{4}.phi_x(1,:),Subject{4}.phi_y(1,:),'Marker','x');
-plot(Subject{4}.phi_x(endSystole,:),Subject{4}.phi_y(endSystole,:),'r');
-plot(Subject{4}.phi_x(endDiastole,:),Subject{4}.phi_y(endDiastole,:),'g');
-xlabel('x coordinate')
-ylabel('y coordinate')
-
-%% Total length of the entire myocardial shape at end-systole (les, at end-diastole (led) and ratio. 
-
-% Subject 1 
-led1 = 0; %length myocardium at end diastole
-for j = endDiastole % time
-    for i = 2:74 % points
-        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        led1 = led1 + norm(diff_long);
-    end 
+%% Total length of the entire myocardial shape at end-systole (les), at
+%% end-diastole (led) and ratio. 
+number_of_subjects = length(Subject);
+les = zeros(1, number_of_subjects);
+led = zeros(1, number_of_subjects);
+for i = 1:number_of_subjects
+    les(i) = LengthHeartAtTime(Subject{i}, endSystole); % length myocardium at end systole
+    led(i) = LengthHeartAtTime(Subject{i}, endDiastole); %length myocardium at end diastole
 end
-les1 = 0; % length myocardium at end systole
-for j = endSystole %
-    for i = 2:74 
-        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        les1 = les1 + norm(diff_long);
-    end 
-end
-ratio1=(led1-les1)/led1;
-%Another aproximation of longitud with slyghtly different results
-% led1 = 0; %length myocardium at end diastole
-% for j = endDiastole %tiempo
-%     for i = 2:74 %puntos
-%         diff_long_x = (Subject{1}.phi_x(j,i) - Subject{1}.phi_x(j,i-1));
-%         diff_long_y = (Subject{1}.phi_y(j,i) - Subject{1}.phi_y(j,i-1));
-%         diff_long = sqrt( (diff_long_x)^2 + (diff_long_y)^2);
-%         led1 = led1 + diff_long;
-%     end 
-% end
-% 
-% les1 = 0; %length myocardium at end systole
-% for j = endSystole %tiempo
-%     for i = 2:74 %puntos
-%         diff_long_x = (Subject{1}.phi_x(j,i) - Subject{1}.phi_x(j,i-1));
-%         diff_long_y = (Subject{1}.phi_y(j,i) - Subject{1}.phi_y(j,i-1));
-%         diff_long = sqrt( (diff_long_x)^2 + (diff_long_y)^2);
-%         les1 = les1 + diff_long;
-%     end 
-% end
-% ratio1b=(led1-les1)/led1;
+ratio = (led - les) ./ led;
 
-% Subject 2
-led2 = 0; %length myocardium at end diastole
-for j = endDiastole % time
-    for i = 2:80 % points
-        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        led2 = led2 + norm(diff_long);
-    end 
-end
-les2 = 0; %length myocardium at end systole
-for j = endSystole % time
-    for i = 2:80 % points
-        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        les2 = les2 + norm(diff_long);
-    end 
-end
-ratio2=(led2-les2)/led2;
 
-% Subject 3
-led3 = 0; %length myocardium at end diastole
-for j = endDiastole %time
-    for i = 2:70 % points
-        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        led3 = led3 + norm(diff_long);
-    end 
-end
-les3 = 0; %length myocardium at end systole
-for j = endSystole %time
-    for i = 2:70 %points
-        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        les3 = les3 + norm(diff_long);
-    end 
-end
-ratio3=(led3-les3)/led3;
-
-% Subject 4
-led4 = 0; %length myocardium at end diastole
-for j = endDiastole %time
-    for i = 2:36 %points
-        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        led4 = led4 + norm(diff_long);
-    end 
-end
-les4 = 0; %length myocardium at end systole
-for j = endSystole % time
-    for i = 2:36 % points
-        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        les4 = les4 + norm(diff_long);
-    end 
-end
-ratio4=(led4-les4)/led4;
-
-%% Radial and longitudinal direction of the myocardial wall 
-% Subject 1 
+%% Radial and longitudinal direction of the myocardial wall
+% Subject 1
 e_long1 = zeros(83,75,2);
 e_radial1 = zeros(83,75,2);
 for j = 1:83 % time
@@ -171,9 +28,9 @@ for j = 1:83 % time
         diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
         diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
         diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long); 
+        tmp1 = diff_long / norm(diff_long);
         tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 75 / 2 
+        if i < 75 / 2
              e_long1(j,i,:) = tmp1;
         else
             e_long1(j,i,:) = -tmp1;
@@ -186,7 +43,7 @@ for j = 1:83 % time
     e_radial1(j,75,:) = 0;
 end
 
-% Subject 2 
+% Subject 2
 e_long2 = zeros(83,81,2);
 e_radial2 = zeros(83,81,2);
 for j = 1:83 % time
@@ -194,9 +51,9 @@ for j = 1:83 % time
         diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
         diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
         diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long); 
+        tmp1 = diff_long / norm(diff_long);
         tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 81 / 2 
+        if i < 81 / 2
              e_long2(j,i,:) = tmp1;
         else
             e_long2(j,i,:) = -tmp1;
@@ -209,7 +66,7 @@ for j = 1:83 % time
     e_radial2(j,81,:) = 0;
 end
 
-% Subject 3 
+% Subject 3
 e_long3 = zeros(83,71,2);
 e_radial3 = zeros(83,71,2);
 for j = 1:83 % time
@@ -217,9 +74,9 @@ for j = 1:83 % time
         diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
         diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
         diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long); 
+        tmp1 = diff_long / norm(diff_long);
         tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 71 / 2 
+        if i < 71 / 2
              e_long3(j,i,:) = tmp1;
         else
             e_long3(j,i,:) = -tmp1;
@@ -232,7 +89,7 @@ for j = 1:83 % time
     e_radial3(j,71,:) = 0;
 end
 
-% Subject 4 
+% Subject 4
 e_long4 = zeros(83,37,2);
 e_radial4 = zeros(83,37,2);
 for j = 1:83 % time
@@ -240,9 +97,9 @@ for j = 1:83 % time
         diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
         diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
         diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long); 
+        tmp1 = diff_long / norm(diff_long);
         tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 37 / 2 
+        if i < 37 / 2
              e_long4(j,i,:) = tmp1;
         else
             e_long4(j,i,:) = -tmp1;
@@ -253,6 +110,16 @@ for j = 1:83 % time
     e_radial4(j,1,:) = 0;
     e_long4(j,37,:) = 0;
     e_radial4(j,37,:) = 0;
+end
+
+
+%{
+%% Radial and longitudinal direction of the myocardial wall
+e_long = zeros(number_of_subjects);
+e_radial = zeros(number_of_subjects);
+for i = 1:number_of_subjects
+    GetLongAndRadDirectiorVectors(Subject{i})
+    %[e_long(i), e_radial(i)] = GetLongAndRadDirectiorVectors(Subject{i});
 end
 
 % Plot direction vectors of the 4 Subjects 
@@ -294,7 +161,8 @@ legend('Longitudinal direction','Radial direction')
 xlabel('x coordinate')
 ylabel('y coordinate')
 title('Directions of each point at the beginning of the cycle of Subject 4')
-
+%}
+%{
 %% Radial and Longitudinal Displacement Calculation 
 
 % Subject 1 
@@ -792,4 +660,4 @@ set(h,'CLim',[-0.2,0.2])
 xlabel('time frames')
 ylabel('points')
 title('Strain Subject 4') 
-
+%}
