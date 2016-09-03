@@ -3,9 +3,10 @@
 clc;
 close all; 
 warning('off', 'MATLAB:singularMatrix')
+axis_parameters = [-60, 40, -120, 0];
 %% Myocardial shape at the beginning of the cycle, at end of the systole
 %% and at end of the diastole for all the subjects
-PlotMyocardialShape(Subject, endSystole, endDiastole, [-60, 40, -120, 0])
+PlotMyocardialShape(Subject, endSystole, endDiastole, axis_parameters)
 
 %% Total length of the entire myocardial shape at end-systole (les), at
 %% end-diastole (led) and ratio. 
@@ -18,109 +19,16 @@ for i = 1:number_of_subjects
 end
 ratio = (led - les) ./ led;
 
-
-%% Radial and longitudinal direction of the myocardial wall
-% Subject 1
-e_long1 = zeros(83,75,2);
-e_radial1 = zeros(83,75,2);
-for j = 1:83 % time
-    for i = 2:74 % points
-        diff_long_x = (Subject{1}.phi_x(j,i+1) - Subject{1}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{1}.phi_y(j,i+1) - Subject{1}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long);
-        tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 75 / 2
-             e_long1(j,i,:) = tmp1;
-        else
-            e_long1(j,i,:) = -tmp1;
-        end
-        e_radial1(j,i,:) = tmp2;
-    end
-    e_long1(j,1,:) = 0;
-    e_radial1(j,1,:) = 0;
-    e_long1(j,75,:) = 0;
-    e_radial1(j,75,:) = 0;
-end
-
-% Subject 2
-e_long2 = zeros(83,81,2);
-e_radial2 = zeros(83,81,2);
-for j = 1:83 % time
-    for i = 2:80 % points
-        diff_long_x = (Subject{2}.phi_x(j,i+1) - Subject{2}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{2}.phi_y(j,i+1) - Subject{2}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long);
-        tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 81 / 2
-             e_long2(j,i,:) = tmp1;
-        else
-            e_long2(j,i,:) = -tmp1;
-        end
-        e_radial2(j,i,:) = tmp2;
-    end
-    e_long2(j,1,:) = 0;
-    e_radial2(j,1,:) = 0;
-    e_long2(j,81,:) = 0;
-    e_radial2(j,81,:) = 0;
-end
-
-% Subject 3
-e_long3 = zeros(83,71,2);
-e_radial3 = zeros(83,71,2);
-for j = 1:83 % time
-    for i = 2:70 % points
-        diff_long_x = (Subject{3}.phi_x(j,i+1) - Subject{3}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{3}.phi_y(j,i+1) - Subject{3}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long);
-        tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 71 / 2
-             e_long3(j,i,:) = tmp1;
-        else
-            e_long3(j,i,:) = -tmp1;
-        end
-        e_radial3(j,i,:) = tmp2;
-    end
-    e_long3(j,1,:) = 0;
-    e_radial3(j,1,:) = 0;
-    e_long3(j,71,:) = 0;
-    e_radial3(j,71,:) = 0;
-end
-
-% Subject 4
-e_long4 = zeros(83,37,2);
-e_radial4 = zeros(83,37,2);
-for j = 1:83 % time
-    for i = 2:36 % points
-        diff_long_x = (Subject{4}.phi_x(j,i+1) - Subject{4}.phi_x(j,i-1))/2;
-        diff_long_y = (Subject{4}.phi_y(j,i+1) - Subject{4}.phi_y(j,i-1))/2;
-        diff_long = [diff_long_x,diff_long_y];
-        tmp1 = diff_long / norm(diff_long);
-        tmp2 = [0, -1; 1, 0 ] * tmp1';
-        if i < 37 / 2
-             e_long4(j,i,:) = tmp1;
-        else
-            e_long4(j,i,:) = -tmp1;
-        end
-        e_radial4(j,i,:) = tmp2;
-    end
-    e_long4(j,1,:) = 0;
-    e_radial4(j,1,:) = 0;
-    e_long4(j,37,:) = 0;
-    e_radial4(j,37,:) = 0;
-end
-
-
-%{
-%% Radial and longitudinal direction of the myocardial wall
-e_long = zeros(number_of_subjects);
-e_radial = zeros(number_of_subjects);
+%% Radial and longitudinal direction of the myocardial wall for all the
+%% subjects
+e_long = cell(number_of_subjects,1);
+e_radial = cell(number_of_subjects,1);
 for i = 1:number_of_subjects
-    GetLongAndRadDirectiorVectors(Subject{i})
-    %[e_long(i), e_radial(i)] = GetLongAndRadDirectiorVectors(Subject{i});
+    %GetLongAndRadDirectiorVectors(Subject{i})
+    [e_long{i}, e_radial{i}] = GetLongAndRadDirectiorVectors(Subject{i});
 end
+% Plot direction vectors of the 4 Subjects 
+PlotDirectionVectors(Subject, e_long, e_radial, axis_parameters)
 
 % Plot direction vectors of the 4 Subjects 
 figure;
@@ -128,8 +36,8 @@ axis equal;
 axis([-60,40,-120,0])
 subplot(2,2,1) 
 hold on 
-quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_long1(1,:,1), e_long1(1,:,2),'r')
-quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_radial1(1,:,1), e_radial1(1,:,2),'b')
+quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_long{1}(1,:,1), e_long{1}(1,:,2),'r')
+quiver(Subject{1}.phi_x(1,:), Subject{1}.phi_y(1,:), e_radial{1}(1,:,1), e_radial{1}(1,:,2),'b')
 legend('Longitudinal direction','Radial direction')
 xlabel('x coordinate')
 ylabel('y coordinate')
@@ -137,8 +45,8 @@ title('Directions of each point at the beginning of the cycle of Subject 1')
 
 subplot(2,2,2) 
 hold on 
-quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_long2(1,:,1), e_long2(1,:,2),'r')
-quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_radial2(1,:,1), e_radial2(1,:,2),'b')
+quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_long{2}(1,:,1), e_long{2}(1,:,2),'r')
+quiver(Subject{2}.phi_x(1,:), Subject{2}.phi_y(1,:), e_radial{2}(1,:,1), e_radial{2}(1,:,2),'b')
 legend('Longitudinal direction','Radial direction')
 xlabel('x coordinate')
 ylabel('y coordinate')
@@ -146,8 +54,8 @@ title('Directions of each point at the beginning of the cycle of Subject 2')
 
 subplot(2,2,3) 
 hold on 
-quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_long3(1,:,1), e_long3(1,:,2),'r')
-quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_radial3(1,:,1), e_radial3(1,:,2),'b')
+quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_long{3}(1,:,1), e_long{3}(1,:,2),'r')
+quiver(Subject{3}.phi_x(1,:), Subject{3}.phi_y(1,:), e_radial{3}(1,:,1), e_radial{3}(1,:,2),'b')
 legend('Longitudinal direction','Radial direction')
 xlabel('x coordinate')
 ylabel('y coordinate')
@@ -155,13 +63,13 @@ title('Directions of each point at the beginning of the cycle of Subject 3')
 
 subplot(2,2,4) 
 hold on 
-quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_long4(1,:,1), e_long4(1,:,2),'r')
-quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_radial4(1,:,1), e_radial4(1,:,2),'b')
+quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_long{4}(1,:,1), e_long{4}(1,:,2),'r')
+quiver(Subject{4}.phi_x(1,:), Subject{4}.phi_y(1,:), e_radial{4}(1,:,1), e_radial{4}(1,:,2),'b')
 legend('Longitudinal direction','Radial direction')
 xlabel('x coordinate')
 ylabel('y coordinate')
 title('Directions of each point at the beginning of the cycle of Subject 4')
-%}
+
 %{
 %% Radial and Longitudinal Displacement Calculation 
 
