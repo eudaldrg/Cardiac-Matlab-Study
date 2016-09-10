@@ -13,7 +13,7 @@ for j = 1:number_of_measures % time
         diff_long = [diff_long_x, diff_long_y];
         diff_long = diff_long / norm(diff_long);
         rotated_diff = [0, -1; 1, 0 ] * diff_long';
-        if i < 75 / 2 
+        if i < number_of_points / 2 
              e_long(j, i, :) = diff_long;
         else
             e_long(j, i, :) = -diff_long;
